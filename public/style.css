@@ -1,0 +1,233 @@
+/* 全局样式 */
+body {
+    background: linear-gradient(to bottom, #e0f7fa, #e3f2fd);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* 导航栏样式 */
+.navbar-brand {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* Title TasteHub 特效 */
+.title-banner {
+    background: linear-gradient(90deg, #fac75c, #f2ece0);
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 4px solid #117c0c;
+}
+
+.title-text {
+    font-size: 48px;
+    font-weight: bold;
+    color: #0046a0;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+    font-family: 'Georgia', serif;
+    letter-spacing: 2px;
+}
+
+/* Page Title */
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    border-bottom: 3px solid #fac75c;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* 按钮样式 */
+.nav-item .btn {
+    color: #f2ece0;
+    background-color: #117c0c;
+    border: none;
+    margin-left: 10px;
+    padding: 5px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.nav-item .btn:hover {
+    background-color: #fac75c;
+    color: #117c0c;
+}
+
+/* 页脚样式 */
+footer {
+    background-color: #117c0c;
+    color: #f2ece0;
+}
+
+/* 新增样式：Create a New Post 表单 */
+.post-form {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+    max-width: 800px;
+    margin: 50px auto;
+}
+
+/* 输入框样式 */
+.input-field {
+    width: calc(100% - 20px);
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 2px solid #a5d6a7;
+    border-radius: 10px;
+    background-color: #f9fff8;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #66bb6a;
+    outline: none;
+    box-shadow: 0 0 6px rgba(102, 187, 106, 0.5);
+}
+
+/* 标签容器 */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 默认标签样式 */
+.tag-label {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 2px solid #2E7D32; /* 深绿色边框 */
+    border-radius: 25px;
+    background-color: #F1FFF1; /* 默认浅绿色背景 */
+    color: #2E7D32;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* 隐藏复选框 */
+.tag-checkbox {
+    display: none;
+}
+
+/* 选中时，整个标签变色 */
+.tag-label:has(.tag-checkbox:checked) {
+    background-color: #2E7D32 !important; /* 选中变深绿色 */
+    color: white !important;
+    border-color: #2E7D32;
+}
+
+/* 悬停效果 */
+.tag-label:hover {
+    background-color: #c8e6c9;
+}
+
+/* 地址按钮 */
+.address-btn {
+    background-color: #66bb6a;
+    color: #ffffff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.address-btn:hover {
+    background-color: #43a047;
+    transform: scale(1.05);
+}
+
+/* 提交按钮 */
+.submit-btn {
+    background: linear-gradient(to right, #43a047, #66bb6a);
+    color: #ffffff;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 20px auto;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, #2e7d32, #43a047);
+    transform: scale(1.1);
+}
+
+/* 图片网格 */
+.images-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 图片容器 */
+.image-container {
+    flex: 1;
+    min-width: 280px; /* 确保不会太小 */
+    max-width: 350px; /* 控制最大宽度 */
+}
+
+/* 响应式图片 */
+.responsive-image {
+    width: 100%;
+    height: auto;
+    max-height: 350px; /* 控制高度 */
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* 标签样式 */
+.tag-pill {
+    display: inline-block;
+    background-color: #e0f7fa;
+    color: #00796b;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.tag-pill:hover {
+    background-color: #b2dfdb;
+    transform: scale(1.1);
+}
+
+/* 评论列表样式 */
+.comments-section {
+    border: 1px solid #a5d6a7;
+    background-color: white; /* 设置评论区背景为白色 */
+}
+
+.comments-list li {
+    list-style: none;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+/* 添加评论表单样式 */
+.add-comment-form textarea {
+    width: 100%;
+    resize: none;
+}
+
+.add-comment-form .btn {
+    background-color: #117c0c;
+    color: white;
+}
+
+.add-comment-form .btn:hover {
+    background-color: #0d5c07;
+}
