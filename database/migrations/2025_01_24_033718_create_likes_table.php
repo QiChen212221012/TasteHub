@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('post_id');
-            $table->unsignedBigInteger('user_id')->nullable(); // 如果需要记录用户
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // 记录用户点赞
+            $table->unsignedBigInteger('post_id')->nullable(); // 被点赞的帖子 ID
+            $table->unsignedBigInteger('comment_id')->nullable(); // 被点赞的评论 ID
             $table->timestamps();
 
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            // 确保同一个用户只能对同一篇帖子或评论点赞一次
+            $table->unique(['user_id', 'post_id', 'comment_id']);
         });
     }
 

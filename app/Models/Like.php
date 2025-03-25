@@ -9,24 +9,19 @@ class Like extends Model
 {
     use HasFactory;
 
-    /**
-     * 可填充的字段
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'user_id',
-        'post_id', // 如果是帖子点赞
-        'comment_id' // 如果是评论点赞
-    ];
-
-    /**
-     * 确保 `user_id` 和 `post_id/comment_id` 组合唯一，防止重复点赞
-     */
     protected $table = 'likes';
 
     /**
-     * 关联帖子（如果 `Like` 是帖子点赞）
+     * 允许批量赋值的字段
+     */
+    protected $fillable = [
+        'user_id',
+        'post_id',  // 仅用于帖子点赞
+        'comment_id' // 仅用于评论点赞
+    ];
+
+    /**
+     * 关联帖子（如果是对帖子的点赞）
      */
     public function post()
     {
@@ -34,7 +29,7 @@ class Like extends Model
     }
 
     /**
-     * 关联评论（如果 `Like` 是评论点赞）
+     * 关联评论（如果是对评论的点赞）
      */
     public function comment()
     {
@@ -50,7 +45,7 @@ class Like extends Model
     }
 
     /**
-     * 判断用户是否已经点赞过某个帖子或评论
+     * 判断用户是否已点赞某个帖子或评论
      */
     public static function hasLiked($userId, $postId = null, $commentId = null)
     {

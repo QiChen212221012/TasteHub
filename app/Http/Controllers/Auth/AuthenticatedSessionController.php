@@ -26,10 +26,15 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // ✅ 判断用户角色，并跳转到不同的页面
+        $user = Auth::user();
+        if ($user->is_admin) {
+            return redirect()->route('admin.dashboard'); // 管理员跳转到后台
+        }
+
+        return redirect()->route('main'); // 普通用户跳转到主页
     }
 
     /**
@@ -37,12 +42,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard()->logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect('/home');
+        return redirect('/'); // ✅ 退出后回到主页
     }
 }

@@ -11,13 +11,20 @@ use Illuminate\Support\Facades\Route;
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The path to your application's "home" route.
-     *
-     * Typically, users are redirected here after authentication.
-     *
-     * @var string
+     * 定义用户登录后的默认跳转路径
      */
-    public const HOME = '/main';
+    public const HOME = '/main'; // ✅ 添加这个常量
+
+    /**
+     * 根据用户角色重定向
+     */
+    public static function redirectTo()
+    {
+        if (auth()->check() && auth()->user()->is_admin) {
+            return '/admin/dashboard'; // 让管理员跳转到后台
+        }
+        return self::HOME; 
+    }
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

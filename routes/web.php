@@ -2,61 +2,85 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\MainController; // 引入 MainController
-use App\Http\Controllers\CommentController; // 引入 CommentController
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NLPController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// 首页路由
+// ✅ 首页（所有用户可访问）
 Route::get('/', function () {
     return view('home'); // 默认封面页
 })->name('home');
 
-// Breeze 提供的认证路由
+// ✅ Laravel Breeze 认证路由
 require __DIR__ . '/auth.php';
 
-// 自定义 Logout 路由（POST 方法）
-Route::post('/logout', function () {
-    auth()->logout();
-    return redirect()->route('home')->with('status', 'You have been logged out.');
-})->name('logout');
+// ✅ 修正 Logout，确保使用 `POST` 方法
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-// 登录路由（默认由 Breeze 提供）
-Route::get('/login', function () {
-    return view('auth.login');
-})->middleware('guest')->name('login');
+// ✅ 登录后，按照角色重定向到不同页面
+Route::get('/redirect', function () {
+    if (Auth::check()) {
+        return Auth::user()->is_admin
+            ? redirect()->route('admin.dashboard') // 管理员跳转后台
+            : redirect()->route('main'); // 普通用户跳转主页
+    }
+    return redirect()->route('login');
+})->name('redirect');
 
-// 注册路由（默认由 Breeze 提供）
-Route::get('/register', function () {
-    return view('auth.register');
-})->middleware('guest')->name('register');
+// ✅ 受保护的用户路由（需要登录）
+Route::middleware(['auth'])->group(function () {
+    Route::get('/main', [MainController::class, 'index'])->name('main');
 
-// 帖子相关路由
-Route::get('/posts/tag/{tag}', [PostController::class, 'filterByTag'])->name('posts.byTag');
-Route::resource('posts', PostController::class);
+    // ✅ 帖子相关
+    Route::get('/posts/tag/{tag}', [PostController::class, 'filterByTag'])->name('posts.byTag');
+    Route::resource('posts', PostController::class)->except(['edit', 'update', 'destroy']);
 
-// Main 页面路由
-Route::get('/main', [MainController::class, 'index'])->name('main');
+    // ✅ 只有帖子作者或管理员可以编辑 & 删除帖子
+    Route::middleware('auth')->group(function () {
+        Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit'); // 编辑帖子
+        Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update'); // 更新帖子
+        Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy'); // 删除帖子
+    });
 
-// 添加评论相关的路由
-Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
-Route::post('/comments/{id}/like', [CommentController::class, 'like'])->name('comments.like');
-Route::post('/comments/{id}/report', [CommentController::class, 'report'])->name('comments.report');
-Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    // ✅ 新增【帖子点赞】路由
+    Route::post('/posts/{post}/like', [PostController::class, 'likePost'])->name('posts.like');
 
-Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::patch('/admin/comments/{comment}/report', [AdminController::class, 'reportComment'])->name('admin.comments.report');
-    Route::delete('/admin/comments/{comment}/delete', [AdminController::class, 'deleteComment'])->name('admin.comments.delete');
+    // ✅ 评论相关
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments/{id}/like', [CommentController::class, 'likeComment'])->name('comments.like');
+    Route::post('/comments/{id}/report', [CommentController::class, 'report'])->name('comments.report');
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
+
+// ✅ 受保护的管理员路由（必须是管理员）
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/comments', [AdminController::class, 'manageComments'])->name('admin.comments');
+
+    // ✅ 修正评论审批 & 删除路由，确保 ID 传递正确
+    Route::patch('/admin/comments/{id}/approve', [AdminController::class, 'approveComment'])->name('admin.comments.approve');
+    Route::delete('/admin/comments/{id}/delete', [AdminController::class, 'deleteComment'])->name('admin.comments.delete');
+});
+
+// ✅ NLP 相关 API 只能通过 `api.php` 访问
+Route::post('/api/detect-sarcasm-and-offensive', [NLPController::class, 'detectSarcasmAndOffensive'])
+    ->name('api.detectSarcasmAndOffensive');
+
+//✅ 搜索功能
+Route::get('/search', [PostController::class, 'search'])->name('search');
+
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+

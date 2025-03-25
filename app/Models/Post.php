@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Post extends Model
 {
@@ -19,6 +20,7 @@ class Post extends Model
         'content',
         'images', // 支持多图片的 JSON 格式
         'address', // 添加地址字段
+        'user_id',
     ];
 
     /**
@@ -49,13 +51,12 @@ class Post extends Model
     }
 
     /**
-     * Define the relationship with the Like model.
      * A post can have many likes.
      */
     public function likes()
-    {
-        return $this->hasMany(Like::class, 'post_id');
-    }
+{
+    return $this->hasMany(Like::class, 'post_id');
+}
 
     /**
      * 获取帖子关联的标签名称列表（用于前端显示）。
@@ -63,5 +64,13 @@ class Post extends Model
     public function getTagNamesAttribute()
     {
         return $this->tags->isNotEmpty() ? $this->tags->pluck('name')->implode(', ') : 'No Tags';
+    }
+
+    /**
+     * Define the relationship with the User model.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -90,11 +90,11 @@
         <div class="left-section">
             <h1>TasteHub</h1>
             <p>Discover, share, and experience amazing dining spots!</p>
-            <a href="/login" class="join-button">Join now</a>
+            <a href="/login" class="join-button">Join Now</a>
             <div class="footer-links">
-                <a href="#">About Us</a> | 
-                <a href="#">Privacy Policy</a> | 
-                <a href="#">Terms of Use</a>
+                <a href="{{ route('about') }}">About Us</a> | 
+                <a href="{{ route('privacy') }}">Privacy Policy</a> |
+                <a href="{{ route('terms') }}">Terms of Use</a>
             </div>
         </div>
 

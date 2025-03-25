@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('post_id')->constrained()->onDelete('cascade'); // 外键关联到 posts 表
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // 外键关联到 users 表
             $table->text('content'); // 评论内容
+            $table->enum('status', ['approved', 'reported', 'deleted'])
+                  ->default('approved')
+                  ->index(); // ✅ 添加索引，提高查询效率
             $table->timestamps(); // 创建时间和更新时间
         });
     }

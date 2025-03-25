@@ -1,10 +1,11 @@
-<?php
+<?php 
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Comment extends Model
 {
@@ -14,7 +15,17 @@ class Comment extends Model
         'content',
         'user_id',
         'post_id',
-        'reported' // Ensure this is included if using reporting
+        'status',       // ✅ 继续使用 status（用户手动举报：reported / approved）
+        'type',         // ✅ NLP 分类（sarcastic / offensive / normal）
+        'is_reviewed',  // ✅ 管理员审核状态
+    ];
+
+    /**
+     * ✅ 确保 `reported` 和 `is_reviewed` 被正确解析
+     */
+    protected $casts = [
+        'reported' => 'boolean',    // 用户手动举报
+        'is_reviewed' => 'boolean', // 是否被管理员审核
     ];
 
     /**
@@ -34,9 +45,9 @@ class Comment extends Model
     }
 
     /**
-     * 定义与 Like 的关系 (一个评论有多个点赞)
+     * 定义与 Like 的多态关系 (评论可以被点赞)
      */
-    public function likes(): HasMany
+    public function likes()
     {
         return $this->hasMany(Like::class, 'comment_id');
     }

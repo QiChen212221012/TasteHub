@@ -10,10 +10,15 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect('/login')->with('error', 'Please log in to access the admin panel.');
         }
 
-        abort(403, 'Unauthorized action.');
+        // ✅ 直接判断 is_admin 字段
+        if (!Auth::user()->is_admin) {
+            return redirect('/')->with('error', 'Access denied! You are not an admin.');
+        }        
+
+        return $next($request);
     }
 }

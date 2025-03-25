@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-12 create-post-page"> {{-- ✅ 统一背景颜色 --}}
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">    
             <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" class="post-form">
                 @csrf
                 <!-- 标题 -->
@@ -31,7 +31,7 @@
                 <div class="mb-4">
                     <label for="address" class="block text-sm font-medium">Address</label>
                     <input type="text" name="address" id="address" class="input-field" placeholder="Enter restaurant address..." required>
-                    <button type="button" onclick="getLocation()" class="address-btn">📍 Use Current Location</button>
+                    <button type="button" onclick="getLocation()" class="address-btn">Use Current Location</button>
                 </div>
 
                 <!-- 标签 -->

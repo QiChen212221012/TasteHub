@@ -1,67 +1,142 @@
-/* 全局样式 */
+/* 🌟 全局样式 */
 body {
-    background: linear-gradient(to bottom, #e0f7fa, #e3f2fd);
+    background: #FCF8E8;
     font-family: 'Poppins', sans-serif;
 }
 
-/* 导航栏样式 */
-.navbar-brand {
-    font-size: 32px;
+/* 🌟 Header */
+.header-nav {
+    background: #1E5631;
+    padding: 20px;
+}
+.title-highlight {
+    color: #D4AF37;
+    font-family: 'Playfair Display', serif;
     font-weight: bold;
+    font-size: 36px; /* ✅ 这里调整字体大小，可以再大一些 */
+    text-transform: uppercase; /* 让字体更有气场（可选） */
+    letter-spacing: 1.5px; /* 增加间距，使其更高级 */
 }
 
-/* Title TasteHub 特效 */
-.title-banner {
-    background: linear-gradient(90deg, #fac75c, #f2ece0);
-    padding: 20px 0;
-    text-align: center;
-    border-bottom: 4px solid #117c0c;
-}
-
-.title-text {
-    font-size: 48px;
+/* 🌟 按钮优化 */
+.btn-create, .btn-view-all, .btn-logout, .btn-view-post {  /* ✅ 添加 `btn-view-post` */
+    background: #1E5631;
+    color: #D4AF37;
+    border-radius: 8px;
+    padding: 12px 24px;
     font-weight: bold;
-    color: #0046a0;
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-    font-family: 'Georgia', serif;
-    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    display: inline-flex;  /* ✅ 让按钮的内容水平对齐 */
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;  /* ✅ 移除超链接默认样式 */
 }
 
-/* Page Title */
-.page-title {
-    font-size: 28px;
-    font-weight: bold;
-    border-bottom: 3px solid #fac75c;
-    padding-bottom: 10px;
-    display: inline-block;
+/* 🌟 悬停效果 */
+.btn-create:hover, .btn-view-all:hover, .btn-logout:hover, .btn-view-post:hover {
+    background: #144022;
+    transform: scale(1.05);
 }
 
-/* 按钮样式 */
-.nav-item .btn {
-    color: #f2ece0;
-    background-color: #117c0c;
+/* 🌟 搜索框优化 */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 6px;  /* ✅ 让内边距缩小，使搜索框不那么高 */
+    border-radius: 12px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;  /* ✅ 让它稍微小一点，不占太多空间 */
+    margin: auto;
+}
+
+/* 🌟 搜索输入框 */
+.search-input {
+    flex-grow: 1;
     border: none;
-    margin-left: 10px;
-    padding: 5px 15px;
+    outline: none;
+    padding: 8px 12px;  /* ✅ 缩小 padding，使输入框更紧凑 */
     font-size: 16px;
+}
+
+/* 🌟 搜索按钮 */
+.btn-search {
+    background: #1E5631;
+    color: #D4AF37;
     font-weight: bold;
-    border-radius: 5px;
+    border: 2px solid #D4AF37;
+    padding: 6px 14px;  /* ✅ 让按钮更紧凑 */
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
-.nav-item .btn:hover {
-    background-color: #fac75c;
-    color: #117c0c;
+.btn-search:hover {
+    background: #144022;
+    transform: scale(1.05);
 }
 
-/* 页脚样式 */
-footer {
-    background-color: #117c0c;
-    color: #f2ece0;
+/* 🌟 文章卡片 */
+.post-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border: 2px solid #D4AF37;
+}
+.post-card:hover {
+    transform: translateY(-5px);
 }
 
-/* 新增样式：Create a New Post 表单 */
+/* 🌟 标签优化 */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.tag-pill {
+    background: linear-gradient(135deg, #2C3E50, #1E5631);
+    color: #D4AF37;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tag-pill:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #1E5631, #144022);
+    color: #FFD700;
+}
+
+/* 🌟 页脚 */
+.footer {
+    background: #1E5631;
+    color: white;
+    padding: 20px;
+}
+
+/* 🌟 让创建页面背景和 main 一致 */
+.create-post-page {
+    background: #FCF8E8;
+    min-height: 100vh;
+    padding-top: 50px;
+}
+
+/* 🌟 让标题和 main 页一致 */
+.title-highlight {
+    color: #D4AF37;
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+    font-size: 32px;
+    text-align: center;
+}
+
+/* 🌟 让表单卡片更优雅 */
 .post-form {
-    background: #ffffff;
+    background: white;
     border-radius: 20px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
     padding: 30px 40px;
@@ -69,55 +144,95 @@ footer {
     margin: 50px auto;
 }
 
-/* 输入框样式 */
+/* 🌟 让输入框边框 & 背景颜色变绿（不变动） */
 .input-field {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: 12px 15px;
     margin-bottom: 20px;
-    border: 2px solid #a5d6a7;
+    border: 2px solid #1E5631; /* ✅ 深绿色边框 */
     border-radius: 10px;
-    background-color: #f9fff8;
+    background-color: #F1FFF1; /* ✅ 浅绿色背景 */
     font-size: 16px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-field:focus {
-    border-color: #66bb6a;
+    border-color: #144022; /* ✅ 聚焦时变深绿 */
     outline: none;
-    box-shadow: 0 0 6px rgba(102, 187, 106, 0.5);
+    box-shadow: 0 0 6px rgba(30, 86, 49, 0.5);
 }
 
-/* 标签容器 */
+/* 🌟 让文件上传框的样式也变绿（不变动） */
+input[type="file"] {
+    border: 2px solid #1E5631;
+    background-color: #F1FFF1;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* 🌟 修复 `Use Current Location` 按钮的样式 */
+.address-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #1E5631; /* ✅ 让背景变成深绿色 */
+    color: #ffffff; /* ✅ 文字变白色 */
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px; /* ✅ 确保不会太贴着输入框 */
+}
+
+/* 🌟 鼠标悬停效果 */
+.address-btn:hover {
+    background: #144022; /* ✅ 悬停时变深一点 */
+    transform: scale(1.05);
+}
+
+/* 🌟 修复按钮图标 */
+.address-btn::before {
+    content: "📍"; /* ✅ 确保 `📍` 图标不会丢失 */
+    font-size: 18px;
+    margin-right: 6px;
+}
+
+/* 🌟 让 `Use Current Location` 的文字和图标对齐 */
+.address-btn span {
+    display: inline-block;
+}
+
+/* 🌟 让标签样式与整体风格协调 */
 .tags-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-/* 默认标签样式 */
+/* 🌟 让标签符合高级感 */
 .tag-label {
     display: inline-block;
     padding: 10px 18px;
-    border: 2px solid #2E7D32; /* 深绿色边框 */
+    border: 2px solid #1E5631;
     border-radius: 25px;
-    background-color: #F1FFF1; /* 默认浅绿色背景 */
-    color: #2E7D32;
+    background-color: #F1FFF1;
+    color: #1E5631;
     font-weight: 500;
     cursor: pointer;
-    user-select: none;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-/* 隐藏复选框 */
-.tag-checkbox {
-    display: none;
-}
-
-/* 选中时，整个标签变色 */
+/* 选中时的样式 */
 .tag-label:has(.tag-checkbox:checked) {
-    background-color: #2E7D32 !important; /* 选中变深绿色 */
+    background-color: #1E5631 !important;
     color: white !important;
-    border-color: #2E7D32;
+    border-color: #1E5631;
 }
 
 /* 悬停效果 */
@@ -125,28 +240,10 @@ footer {
     background-color: #c8e6c9;
 }
 
-/* 地址按钮 */
-.address-btn {
-    background-color: #66bb6a;
-    color: #ffffff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-size: 14px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.address-btn:hover {
-    background-color: #43a047;
-    transform: scale(1.05);
-}
-
-/* 提交按钮 */
+/* 🌟 提交按钮优化 */
 .submit-btn {
-    background: linear-gradient(to right, #43a047, #66bb6a);
-    color: #ffffff;
+    background: linear-gradient(to right, #1E5631, #2E7D32);
+    color: white;
     padding: 15px 25px;
     border: none;
     border-radius: 25px;
@@ -159,7 +256,7 @@ footer {
 }
 
 .submit-btn:hover {
-    background: linear-gradient(to right, #2e7d32, #43a047);
+    background: linear-gradient(to right, #2E7D32, #43a047);
     transform: scale(1.1);
 }
 

@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-green-50">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-lg p-6">
                 
@@ -70,14 +70,17 @@
                                         <p class="mt-2 text-gray-700">{{ $comment->content }}</p>
                                         <div class="flex items-center space-x-2 mt-3">
                                             <!-- Like Button -->
-                                            <button class="btn btn-like" data-id="{{ $comment->id }}">
-                                                👍 Like (<span id="like-count-{{ $comment->id }}">{{ $comment->likes_count }}</span>)
-                                            </button>
+                                            <button class="btn btn-like flex items-center space-x-2" data-id="{{ $comment->id }}">
+                                                <span id="like-icon-{{ $comment->id }}">{{ $comment->is_liked_by_user ? '❤️' : '🤍' }}</span> 
+                                                <span>Like (<span id="like-count-{{ $comment->id }}">{{ $comment->likes_count ?? 0 }}</span>)</span>
+                                            </button>                                            
 
                                             <!-- Report Button -->
-                                            <button class="btn btn-report {{ $comment->is_reported ? 'reported' : '' }}" data-id="{{ $comment->id }}">
-                                                🚩 {{ $comment->is_reported ? 'Reported' : 'Report' }}
-                                            </button>
+                                            <button class="btn btn-report {{ $comment->status === 'reported' ? 'reported' : '' }}" 
+                                                data-id="{{ $comment->id }}" 
+                                                data-reported="{{ $comment->status === 'reported' ? 'true' : 'false' }}">
+                                                🚩 <span id="report-status-{{ $comment->id }}">{{ $comment->status === 'reported' ? 'Reported' : 'Report' }}</span>
+                                            </button>                                            
 
                                             <!-- Delete Button -->
                                             @if(auth()->id() === $comment->user_id || auth()->user()->is_admin)
@@ -107,64 +110,89 @@
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
     let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // 处理点赞
+    // ❤️ 处理点赞（改为爱心）
     document.querySelector('#comment-list').addEventListener('click', function (event) {
-        if (event.target.classList.contains('btn-like')) {
-            let commentId = event.target.dataset.id;
-            fetch(`/comments/${commentId}/like`, {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': csrfToken }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    event.target.innerHTML = `👍 Like (${data.likes})`;
-                }
-            });
-        }
+        let target = event.target.closest('.btn-like');
+        if (!target) return;
+
+        let commentId = target.dataset.id;
+        let likeCount = document.getElementById(`like-count-${commentId}`);
+        let likeIcon = document.getElementById(`like-icon-${commentId}`);
+
+        fetch(`/comments/${commentId}/like`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                likeCount.textContent = data.likes_count ?? 0;
+                likeIcon.textContent = data.liked ? '❤️' : '🤍'; // 统一改为爱心
+            }
+        })
+        .catch(error => console.error('Error:', error));
     });
 
-    // 处理举报
+    // 🚩 处理举报
     document.querySelector('#comment-list').addEventListener('click', function (event) {
-        if (event.target.classList.contains('btn-report')) {
-            let commentId = event.target.dataset.id;
-            fetch(`/comments/${commentId}/report`, {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': csrfToken }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    event.target.innerHTML = "🚩 Reported";
-                    event.target.classList.add("reported");
+        let target = event.target.closest('.btn-report');
+        if (!target) return;
+
+        let commentId = target.dataset.id;
+
+        fetch(`/comments/${commentId}/report`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                let reportButton = document.querySelector(`[data-id="${commentId}"]`);
+                let reportText = document.getElementById(`report-status-${commentId}`);
+
+                if (data.status === 'reported') {
+                    reportButton.classList.add("reported");
+                    reportButton.dataset.reported = 'true';
+                    reportText.innerHTML = "Reported";
+                } else {
+                    reportButton.classList.remove("reported");
+                    reportButton.dataset.reported = 'false';
+                    reportText.innerHTML = "Report";
                 }
-            });
-        }
+            } else {
+                alert("Failed to report comment.");
+            }
+        });
     });
 
-    // 处理删除
+    // 🗑️ 处理删除
     document.querySelector('#comment-list').addEventListener('click', function (event) {
-        if (event.target.classList.contains('btn-delete')) {
-            let commentId = event.target.dataset.id;
-            fetch(`/comments/${commentId}`, {
-                method: 'DELETE',
-                headers: { 'X-CSRF-TOKEN': csrfToken }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Comment deleted successfully!");
-                    document.querySelector(`#comment-${commentId}`).remove();
-                }
-            });
-        }
+        let target = event.target.closest('.btn-delete');
+        if (!target) return;
+
+        let commentId = target.dataset.id;
+
+        fetch(`/comments/${commentId}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': csrfToken }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Comment deleted successfully!");
+                document.getElementById(`comment-${commentId}`).remove();
+            }
+        });
     });
 
-    // **发表评论**
+    // ✍️ 发表评论
     document.querySelector('#comment-form').addEventListener('submit', function (event) {
         event.preventDefault();
         let commentContent = document.querySelector('#comment-content').value;
@@ -190,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <p class="mt-2 text-gray-700">${data.comment.content}</p>
                         <div class="flex items-center space-x-2 mt-3">
                             <button class="btn btn-like" data-id="${data.comment.id}">
-                                👍 Like (0)
+                                <span id="like-icon-${data.comment.id}">🤍</span> Like (<span id="like-count-${data.comment.id}">0</span>)
                             </button>
                             <button class="btn btn-report" data-id="${data.comment.id}">
                                 🚩 Report
@@ -204,11 +232,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('#comment-list').insertAdjacentHTML('beforeend', newComment);
                 document.querySelector('#comment-content').value = ''; // 清空输入框
                 document.querySelector('#comment-count').textContent = parseInt(document.querySelector('#comment-count').textContent) + 1;
-                document.querySelector('#no-comments').style.display = 'none'; // 隐藏 "No comments yet."
+                document.querySelector('#no-comments').style.display = 'none';
             }
         });
     });
-
 });
 </script>
 
@@ -223,11 +250,61 @@ document.addEventListener('DOMContentLoaded', function () {
         outline: none;
         transition: all 0.3s ease;
     }
-    .btn-like { background-color: #66bb6a; color: white; }
-    .btn-report { background-color: #ef5350; color: white; }
-    .btn-report.reported { background-color: grey; }
-    .btn-delete { background-color: #757575; color: white; }
-    .btn-submit { background-color: #117c0c; color: white; }
+
+/* 🌟 Like 按钮（墨绿色 + 金色） */
+.btn-like {
+    background: #1E5631;
+    color: #D4AF37;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-like:hover {
+    background: #144022;
+    transform: scale(1.05);
+}
+
+/* 🌟 Report 按钮（酒红色 + 白色） */
+.btn-report {
+    background: #C0392B;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-report:hover {
+    background: #A93226;
+    transform: scale(1.05);
+}
+
+/* 🌟 已举报的 Report 按钮（变灰） */
+.reported {
+    background: #6C757D !important;
+    color: white;
+    pointer-events: none;
+}
+
+/* 🌟 Delete 按钮（深灰 + 白色） */
+.btn-delete {
+    background: #6C757D;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #5A6268;
+    transform: scale(1.05);
+}
 </style>
 
 </x-app-layout>

@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\Post;
+use App\Policies\PostPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        Post::class => PostPolicy::class, // ✅ 绑定 PostPolicy
     ];
 
     /**
@@ -21,6 +23,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // ✅ Laravel 9+ 及以上版本会自动注册 Policies，不需要手动调用 registerPolicies()
+
+        // ✅ 额外的权限控制（可选）
+        Gate::define('manage-post', function ($user, $post) {
+            return $user->id === $post->user_id || $user->isAdmin();
+        });
     }
 }
